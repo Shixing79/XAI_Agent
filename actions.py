@@ -53,5 +53,5 @@ known_actions = {
     "wikipedia": wikipedia,
     "arxiv_search": arxiv_search,
     "calculate": calculate,
-    "tavily_search": tavily_search,  # added
+    "tavily_search": tavily_search,
 }
