@@ -1,0 +1,5 @@
+openai
+requests
+httpx
+python-dotenv
+tavily-python
