@@ -22,7 +22,11 @@ arxiv_search:
 e.g. arxiv_search:
 Returns a summary of research papers
 
-Use tavily_search for general web searches, wikipedia for in-depth knowledge, arxiv_search for academic papers, and calculate for mathematical calculations.
+ask_user:
+e.g. ask_user: Do you mean Apple the company or the fruit?
+Prompts the user for clarification and uses their answer as the observation.
+
+Use tavily_search for general web searches, wikipedia for in-depth knowledge, arxiv_search for academic papers, calculate for mathematical calculations, and ask_user when the query is ambiguous.
 
 
 Example session:

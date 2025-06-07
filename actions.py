@@ -9,6 +9,9 @@ ARXIV_NAMESPACE = '{http://www.w3.org/2005/Atom}'
 
 load_dotenv()  # Load environment variables from .env
 
+def ask_user(question):
+    return input(f"Clarification needed: {question}\nYour answer: ")
+
 def wikipedia(q):
     response = httpx.get("https://en.wikipedia.org/w/api.php", params={
         "action": "query",
@@ -54,4 +57,5 @@ known_actions = {
     "arxiv_search": arxiv_search,
     "calculate": calculate,
     "tavily_search": tavily_search,
+    "ask_user": ask_user,
 }
