@@ -4,6 +4,8 @@ Use Thought to describe your thoughts about the question you have been asked.
 Use Action to run one of the actions available to you - then return PAUSE.
 Observation will be the result of running those actions.
 
+You should continue the conversation and answer follow-up questions until the user says 'quit' or 'exit'.
+
 Your available actions are:
 
 tavily_search:
