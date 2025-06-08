@@ -36,6 +36,10 @@ partial_dependence_plot:
 e.g. partial_dependence_plot: age
 Generates a partial dependence plot for the specified feature using the trained model and validation data, and saves it as a PNG file in the current directory. The filename will be 'partial_dependence_<feature>.png'.
 
+feature_description:
+e.g. feature_description: 13w_sellout
+Returns the description of a feature from the metadata file (metadata.md). Use this action when it's needed to know the meaning or definition of a feature in the dataset.
+
 Use tavily_search for general web searches, calculate for mathematical calculations, ask_user when the query is ambiguous, 
 full_dataset_query for questions about the dataset, explain_prediction for questions about why a prediction is high or low for a specific model/week, 
 global_feature_importance for which features are most important for the model, and partial_dependence_plot to visualize the effect of a feature on the model's predictions.

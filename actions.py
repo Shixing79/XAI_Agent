@@ -8,6 +8,8 @@ import re
 import matplotlib.pyplot as plt
 from sklearn.inspection import partial_dependence
 from sklearn.inspection import PartialDependenceDisplay
+import json
+from pathlib import Path
 
 load_dotenv() 
 
@@ -100,10 +102,6 @@ def global_feature_importance(_=None):
         return f"Error in global_feature_importance: {e}"
 
 def partial_dependence_plot(query):
-    """
-    Usage: partial_dependence_plot(feature_name)
-    Example: partial_dependence_plot(age)
-    """
     try:
         feature = query.strip()
         model = joblib.load("lgbm_model.joblib")
@@ -123,6 +121,27 @@ def partial_dependence_plot(query):
     except Exception as e:
         return f"Error in partial_dependence_plot: {e}"
 
+def feature_description(feature_name, metadata_path="metadata.md"):
+    """
+    Returns the description of a feature from the metadata file.
+    """
+    try:
+        # Load metadata.json block from metadata.md
+        with open(metadata_path, "r") as f:
+            lines = f.readlines()
+        # Find the JSON block in the markdown file
+        start = next(i for i, line in enumerate(lines) if line.strip().startswith("{"))
+        end = len(lines) - next(i for i, line in enumerate(reversed(lines)) if line.strip().endswith("}"))
+        json_str = "".join(lines[start:end])
+        metadata = json.loads(json_str)
+        # Search for the feature
+        for col in metadata["columns"]:
+            if col["name"].lower() == feature_name.strip().lower():
+                return f"{col['name']}: {col['description']}"
+        return f"Feature '{feature_name}' not found in metadata."
+    except Exception as e:
+        return f"Error in feature_description: {e}"
+
 known_actions = {
     "calculate": calculate,
     "tavily_search": tavily_search,
@@ -131,4 +150,5 @@ known_actions = {
     "local_feature_importance": local_feature_importance,
     "global_feature_importance": global_feature_importance,
     "partial_dependence_plot": partial_dependence_plot,
+    "feature_description": feature_description,
 }
