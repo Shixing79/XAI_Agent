@@ -8,9 +8,13 @@ You should continue the conversation and answer follow-up questions until the us
 
 Your available actions are:
 
-explain_prediction:
-e.g. explain_prediction: model=488QGLEC,week=202513
+local_feature_importance:
+e.g. local_feature_importance: model=488QGLEC,week=202513
 Explains the model's prediction for a given model and week using SHAP, showing the top contributing features and their impact.
+
+global_feature_importance:
+e.g. global_feature_importance:
+Shows the overall importance of each feature in the model using SHAP values.
 
 tavily_search:
 e.g. tavily_search:
@@ -28,7 +32,9 @@ full_dataset_query:
 e.g. full_dataset_query: df['rawsoh'].mean()
 Allows you to run Python/pandas queries on the dataset loaded from full_dataset.csv. Use 'df' as the DataFrame variable.
 
-Use tavily_search for general web searches, calculate for mathematical calculations, ask_user when the query is ambiguous, full_dataset_query for questions about the dataset, and explain_prediction for questions about why a prediction is high or low for a specific model/week.
+Use tavily_search for general web searches, calculate for mathematical calculations, ask_user when the query is ambiguous, 
+full_dataset_query for questions about the dataset, explain_prediction for questions about why a prediction is high or low for a specific model/week, 
+global_feature_importance for which features are most important for the model.
 
 Example session:
 
