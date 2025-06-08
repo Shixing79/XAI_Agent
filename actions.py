@@ -17,15 +17,14 @@ def tavily_search(q):
     for result in response['results']:
         return(result['content'])
     
-
 def calculate(what):
     try:
         return eval(what)
     except Exception as e:
         return f"Error: {e}"
 
-def dataset_query(query):
-    df = pd.read_csv("Final_Data.csv")
+def full_dataset_query(query):
+    df = pd.read_csv("full_dataset.csv")
     try:
         # Only allow attribute access and simple expressions for safety
         result = eval(query, {"df": df, "pd": pd})
@@ -37,5 +36,5 @@ known_actions = {
     "calculate": calculate,
     "tavily_search": tavily_search,
     "ask_user": ask_user,
-    "dataset_query": dataset_query,
+    "full_dataset_query": full_dataset_query,
 }

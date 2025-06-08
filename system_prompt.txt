@@ -20,9 +20,9 @@ ask_user:
 e.g. ask_user: Do you mean Apple the company or the fruit?
 Prompts the user for clarification and uses their answer as the observation.
 
-dataset_query:
-e.g. dataset_query: df['age'].mean()
-Allows you to run Python/pandas queries on the dataset loaded from Final_Data.csv. Use 'df' as the DataFrame variable.
+full_dataset_query:
+e.g. full_dataset_query: df['rawsoh'].mean()
+Allows you to run Python/pandas queries on the dataset loaded from full_dataset.csv. Use 'df' as the DataFrame variable.
 
 Use tavily_search for general web searches, calculate for mathematical calculations, ask_user when the query is ambiguous, and dataset_query for questions about the dataset, such as statistics, filtering, or summaries.
 
