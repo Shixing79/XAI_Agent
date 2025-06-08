@@ -7,7 +7,7 @@ class Agent:
     self.max_turns = max_turns
     self.bot = ChatBot(system_prompt)
     self.known_actions = known_actions
-    self.action_re = re.compile('^Action: (\w+): (.*)')
+    self.action_re = re.compile(r'^Action: (\w+): (.*)')
 
   def run(self, question):
     i = 0
@@ -24,7 +24,7 @@ class Agent:
           raise Exception(f"Unknown action: {action} for action input: {action_input}")
         print(f"-- Running action: {action} {action_input}")
         observation = self.known_actions[action](action_input)
-        print(f"-- Observation: {observation}")
+        print(f"Observation: {observation}")
         prompt = f"Observation: {observation}"
       else:
         return

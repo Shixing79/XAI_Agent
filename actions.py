@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 import os 
 from dotenv import load_dotenv 
 from tavily import TavilyClient
+import pandas as pd
 
 ARXIV_NAMESPACE = '{http://www.w3.org/2005/Atom}'
 
@@ -51,6 +52,14 @@ def calculate(what):
     except Exception as e:
         return f"Error: {e}"
 
+def dataset_query(query):
+    df = pd.read_csv("Final_Data.csv")
+    try:
+        # Only allow attribute access and simple expressions for safety
+        result = eval(query, {"df": df, "pd": pd})
+        return str (result)
+    except Exception as e:
+        return f"Error: {e}"
 
 known_actions = {
     "wikipedia": wikipedia,
@@ -58,4 +67,5 @@ known_actions = {
     "calculate": calculate,
     "tavily_search": tavily_search,
     "ask_user": ask_user,
+    "dataset_query": dataset_query,
 }
