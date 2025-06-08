@@ -5,6 +5,9 @@ import pandas as pd
 import shap
 import joblib
 import re
+import matplotlib.pyplot as plt
+from sklearn.inspection import partial_dependence
+from sklearn.inspection import PartialDependenceDisplay
 
 load_dotenv() 
 
@@ -96,6 +99,30 @@ def global_feature_importance(_=None):
     except Exception as e:
         return f"Error in global_feature_importance: {e}"
 
+def partial_dependence_plot(query):
+    """
+    Usage: partial_dependence_plot(feature_name)
+    Example: partial_dependence_plot(age)
+    """
+    try:
+        feature = query.strip()
+        model = joblib.load("lgbm_model.joblib")
+        df = joblib.load("X_valid.joblib")
+        if feature not in df.columns:
+            return f"Feature '{feature}' not found in dataset."
+        # Convert integer columns to float for partial dependence
+        if pd.api.types.is_integer_dtype(df[feature]):
+            df[feature] = df[feature].astype(float)
+        
+        plt.figure()
+        display = PartialDependenceDisplay.from_estimator(model, df, [feature])
+        filename = f"partial_dependence_{feature}.png"
+        plt.savefig(filename)
+        plt.close()
+        return f"Partial dependence plot saved as '{filename}'."
+    except Exception as e:
+        return f"Error in partial_dependence_plot: {e}"
+
 known_actions = {
     "calculate": calculate,
     "tavily_search": tavily_search,
@@ -103,4 +130,5 @@ known_actions = {
     "full_dataset_query": full_dataset_query,
     "local_feature_importance": local_feature_importance,
     "global_feature_importance": global_feature_importance,
+    "partial_dependence_plot": partial_dependence_plot,
 }

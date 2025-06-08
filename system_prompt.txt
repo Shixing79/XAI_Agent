@@ -32,9 +32,13 @@ full_dataset_query:
 e.g. full_dataset_query: df['rawsoh'].mean()
 Allows you to run Python/pandas queries on the dataset loaded from full_dataset.csv. Use 'df' as the DataFrame variable.
 
+partial_dependence_plot:
+e.g. partial_dependence_plot: age
+Generates a partial dependence plot for the specified feature using the trained model and validation data, and saves it as a PNG file in the current directory. The filename will be 'partial_dependence_<feature>.png'.
+
 Use tavily_search for general web searches, calculate for mathematical calculations, ask_user when the query is ambiguous, 
 full_dataset_query for questions about the dataset, explain_prediction for questions about why a prediction is high or low for a specific model/week, 
-global_feature_importance for which features are most important for the model.
+global_feature_importance for which features are most important for the model, and partial_dependence_plot to visualize the effect of a feature on the model's predictions.
 
 Example session:
 
