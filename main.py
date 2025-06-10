@@ -6,7 +6,10 @@ if __name__ == "__main__":
     print("What is your question for the agent?\nType 'q', 'quit' or 'exit' to end the conversation.")    
     while True:
         user_question = input("You: ")
-        if user_question.strip().lower() in ['q',"quit", "exit"]:
+        if user_question.strip().lower() in ['q', "quit", "exit"]:
             print("Goodbye!")
             break
-        agent.run(user_question)
+        try:
+            agent.run(user_question)
+        except Exception as e:
+            print(f"Sorry, something went wrong: {e}")
