@@ -27,6 +27,11 @@ full_dataset_query:
 e.g. full_dataset_query: df['rawsoh'].mean()
 Allows you to run Python/pandas queries on the dataset loaded from full_dataset.csv. Use 'df' as the DataFrame variable.
 
+trend_of_uplifted_sell_out:
+e.g. trend_of_uplifted_sell_out: year on year trend for model 488QGLEC Numweek 13
+e.g. trend_of_uplifted_sell_out: week on week trend for model 488QGLEC Numweek 13 year 2023
+Calculates the year-on-year or week-on-week trend of the prediction feature uplifted_sell_out for a given model and week using the full_dataset.csv. For year-on-year, it compares the uplifted_sell_out for the same model and week across two consecutive years. For week-on-week, it compares the uplifted_sell_out for the same model and year between two consecutive weeks. Returns the values and their ratio.
+
 local_feature_importance:
 e.g. local_feature_importance: model=488QGLEC,week=202513
 Explains the model's prediction for a given model and week using SHAP, showing the top contributing features and their impact.
