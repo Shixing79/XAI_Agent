@@ -130,6 +130,66 @@ def feature_description(feature_name, metadata_path="metadata.md"):
     except Exception as e:
         return f"Error in feature_description: {e}"
 
+def trend_of_uplifted_sell_out(query):
+    """
+    Calculate year-on-year or week-on-week trend of uplifted_sell_out for a given model and week.
+    Example queries:
+      "year on year trend for model 488QGLEC week 13"
+      "week on week trend for model 488QGLEC week 13 year 2023"
+    """
+    import pandas as pd
+    import re
+
+    try:
+        df = pd.read_csv("full_dataset.csv")
+        # Parse query
+        m = re.search(r'(year|week) on (year|week) trend.*model\s*([A-Za-z0-9]+).*week\s*(\d+)(?:.*year\s*(\d+))?', query, re.IGNORECASE)
+        if not m:
+            return "Please specify trend type, model, week, and optionally year. E.g., 'year on year trend for model 488QGLEC week 13'"
+
+        trend_type = m.group(1).lower()
+        model = m.group(3)
+        weeknum = int(m.group(4))
+        year = int(m.group(5)) if m.group(5) else None
+
+        if trend_type == "year":
+            # Find all years for this model and weeknum
+            rows = df[(df['model'] == model) & (df['WeekNum'] == weeknum)]
+            if rows.shape[0] < 2:
+                return f"Not enough data for year-on-year trend for model={model}, week={weeknum}"
+            # Sort by year
+            rows = rows.sort_values("Year")
+            # Take last two years
+            if rows.shape[0] >= 2:
+                last2 = rows.iloc[-2:]
+                y1, y2 = last2['Year'].values
+                v1, v2 = last2['uplifted_sell_out'].values
+                if v1 == 0:
+                    return f"Previous year's uplifted_sell_out is 0, cannot compute ratio."
+                ratio = v2 / v1
+                return f"Year-on-year trend for model={model}, week={weeknum}: {y1}={v1}, {y2}={v2}, ratio={ratio:.4f}"
+            else:
+                return f"Not enough data for year-on-year trend for model={model}, week={weeknum}"
+        elif trend_type == "week":
+            # Need year for week-on-week
+            if not year:
+                return "Please specify the year for week-on-week trend."
+            # Find this week and previous week
+            row = df[(df['model'] == model) & (df['WeekNum'] == weeknum) & (df['Year'] == year)]
+            prev_row = df[(df['model'] == model) & (df['WeekNum'] == weeknum-1) & (df['Year'] == year)]
+            if row.empty or prev_row.empty:
+                return f"Not enough data for week-on-week trend for model={model}, week={weeknum}, year={year}"
+            v1 = prev_row.iloc[0]['uplifted_sell_out']
+            v2 = row.iloc[0]['uplifted_sell_out']
+            if v1 == 0:
+                return f"Previous week's uplifted_sell_out is 0, cannot compute ratio."
+            ratio = v2 / v1
+            return f"Week-on-week trend for model={model}, year={year}, week {weeknum-1}={v1}, week {weeknum}={v2}, ratio={ratio:.4f}"
+        else:
+            return "Unknown trend type. Use 'year on year' or 'week on week'."
+    except Exception as e:
+        return f"Error in trend_of_uplifted_sell_out: {e}"
+
 known_actions = {
     "calculate": calculate,
     "ask_user": ask_user,
@@ -138,4 +198,5 @@ known_actions = {
     "global_feature_importance": global_feature_importance,
     "partial_dependence_plot": partial_dependence_plot,
     "feature_description": feature_description,
+    "trend_of_uplifted_sell_out": trend_of_uplifted_sell_out,
 }
