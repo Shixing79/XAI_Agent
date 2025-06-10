@@ -1,6 +1,5 @@
 import os 
 from dotenv import load_dotenv 
-from tavily import TavilyClient
 import pandas as pd
 import shap
 import joblib
@@ -18,17 +17,6 @@ def ask_user(question):
         return input(f"Clarification needed: {question}\nYour answer: ")
     except Exception as e:
         return f"Error in ask_user: {e}"
-
-def tavily_search(q):
-    try:
-        client = TavilyClient(api_key=os.getenv("TAVILY_KEY"))
-        response = client.search(q)
-        if not response['results']:
-            return "No results found for this query."
-        for result in response['results']:
-            return(result['content'])
-    except Exception as e:
-        return f"Error in tavily_search: {e}"
 
 def calculate(what):
     try:
@@ -144,7 +132,6 @@ def feature_description(feature_name, metadata_path="metadata.md"):
 
 known_actions = {
     "calculate": calculate,
-    "tavily_search": tavily_search,
     "ask_user": ask_user,
     "full_dataset_query": full_dataset_query,
     "local_feature_importance": local_feature_importance,

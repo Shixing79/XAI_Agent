@@ -8,7 +8,6 @@
 - **Explainable AI:** Get local and global feature importance using SHAP.
 - **Data Exploration:** Query the underlying dataset with Python/pandas expressions.
 - **Visualization:** Generate partial dependence plots for model features.
-- **Web Search:** Retrieve external information using the Tavily API.
 - **Clarification:** The agent can ask follow-up questions for ambiguous queries.
 
 ## Usage
@@ -52,5 +51,5 @@
 
 ## Notes
 
-- The agent uses OpenAI and Tavily APIs; set up your API keys as needed.
+- The agent uses OpenAI API; set up your API keys as needed.
 - The dataset file (`full_dataset.csv`) is required for data queries and is not included in this repository.
