@@ -4,10 +4,10 @@
 
 ## Features
 
-- **Conversational Interface:** Ask questions about sales, inventory, model predictions, and more.
 - **Explainable AI:** Get local and global feature importance using SHAP.
-- **Data Exploration:** Query the underlying dataset with Python/pandas expressions.
 - **Visualization:** Generate partial dependence plots for model features.
+- **Data Exploration:** Query the underlying dataset with Python/pandas expressions.
+- **Conversational Interface:** Ask questions about sales, inventory, model predictions, and more.
 - **Clarification:** The agent can ask follow-up questions for ambiguous queries.
 
 ## Usage
