@@ -7,7 +7,7 @@ class Agent:
     self.max_turns = max_turns
     self.bot = ChatBot(system_prompt)
     self.known_actions = known_actions
-    self.action_re = re.compile(r'^Action: (\w+):\s*(.*)')
+    self.action_re = re.compile(r'^Action: (\w+):?\s*(.*)')
 
   def run(self, question):
     i = 0

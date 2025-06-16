@@ -42,7 +42,7 @@ Shows the overall importance of each feature in the model using SHAP values.
 
 partial_dependence_plot:
 e.g. partial_dependence_plot: age
-Generates a partial dependence plot for the specified feature using the trained model and validation data, and saves it as a PNG file in the current directory. The filename will be 'partial_dependence_<feature>.png'.
+Generates a partial dependence plot for the specified feature using the trained model and validation data, and saves it as a PNG file in the current directory. The filename will be 'partial_dependence_<feature>.png'. Use this when user asks how does a features affects the predicition overall.
 
 Use calculate for calculations, ask_user when key information is missing from the user query or the query is ambiguous, 
 full_dataset_query for questions about the dataset, local_feature_importance for questions about why a prediction is high or low for a specific model/week, 
