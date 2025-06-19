@@ -3,3 +3,4 @@ openai
 python-dotenv
 joblib
 matplotlib
+dice-ml

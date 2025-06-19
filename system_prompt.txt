@@ -6,7 +6,6 @@ Use Thought to describe your thoughts about the question you have been asked.
 Use Action to run one of the actions available to you - then return PAUSE.
 Observation will be the result of running those actions.
 
-
 You should continue the conversation and answer follow-up questions until the user says 'q', 'quit' or 'exit'.
 
 Your available actions are:
@@ -44,9 +43,13 @@ partial_dependence_plot:
 e.g. partial_dependence_plot: age
 Generates a partial dependence plot for the specified feature using the trained model and validation data, and saves it as a PNG file in the current directory. The filename will be 'partial_dependence_<feature>.png'. Use this when user asks how does a features affects the predicition overall.
 
+counterfactual_explanation:
+e.g. counterfactual_explanation: model=488QGLEC,week=202513,num_counterfactuals=3
+Generates counterfactual explanations for a given instance using DiCE. Provide the model, week, and optionally the number of counterfactuals to generate. Returns a table of counterfactual examples showing how feature changes could alter the prediction.
+
 Use calculate for calculations, ask_user when key information is missing from the user query or the query is ambiguous, 
 full_dataset_query for questions about the dataset, local_feature_importance for questions about why a prediction is high or low for a specific model/week, 
-global_feature_importance for which features are most important for the model, and partial_dependence_plot to visualize the effect of a feature on the model's predictions.
+global_feature_importance for which features are most important for the model, partial_dependence_plot to visualize the effect of a feature on the model's predictions, and counterfactual_explanation to show how changing features could change the prediction.
 
 Example session:
 
