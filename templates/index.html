@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Forecast Genie</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f7f7f7; margin: 0; }
+    #chat-container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 12px #bbb; padding: 24px; }
+    #chat-box { height: 400px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px; padding: 16px; background: #fafbfc; margin-bottom: 16px; }
+    .msg { margin: 12px 0; display: flex; align-items: flex-start; }
+    .user, .genie { font-weight: bold; margin-right: 8px; }
+    .user { color: #1976d2; }
+    .genie { color: #43a047; }
+    .bubble {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 16px;
+      max-width: 80%;
+      background: #e3f2fd;
+      margin-left: 4px;
+      word-break: break-word;
+    }
+    .msg.genie .bubble { background: #e8f5e9; }
+    .msg.user { flex-direction: row-reverse; }
+    .msg.user .bubble { background: #e3f2fd; }
+    .msg.user .user { margin-left: 8px; margin-right: 0; }
+    #input-row { display: flex; gap: 8px; }
+    #user-input { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; }
+    #send-btn { padding: 12px 22px; border: none; border-radius: 6px; background: #1976d2; color: #fff; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    #send-btn:disabled { background: #90caf9; cursor: not-allowed; }
+    #loading { display: none; margin-left: 10px; color: #888; font-style: italic; }
+    @media (max-width: 700px) {
+      #chat-container { max-width: 98vw; padding: 8px; }
+      #chat-box { height: 300px; padding: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <h2 style="text-align:center; margin-top:0;">Forecast Genie</h2>
+    <div id="chat-box" aria-live="polite" aria-label="Chat history"></div>
+    <div id="input-row">
+      <input type="text" id="user-input" placeholder="Type your XAI question..." autocomplete="off" autofocus aria-label="Type your XAI question" />
+      <button id="send-btn" aria-label="Send message">Send</button>
+      <span id="loading">Thinking...</span>
+    </div>
+  </div>
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const loading = document.getElementById('loading');
+
+    // Focus input on load
+    window.onload = () => userInput.focus();
+
+    function appendMessage(sender, text) {
+      const msg = document.createElement('div');
+      const senderClass = sender === 'user' ? 'user' : 'genie';
+      const senderName = sender === 'user' ? 'You' : 'Genie';
+      msg.className = 'msg ' + senderClass;
+      msg.innerHTML = `<span class="${senderClass}">${senderName}:</span><span class="bubble">${text}</span>`;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function setLoading(isLoading) {
+      loading.style.display = isLoading ? 'inline' : 'none';
+      sendBtn.disabled = isLoading;
+      userInput.disabled = isLoading;
+    }
+
+    function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
+      appendMessage('user', escapeHtml(text));
+      userInput.value = '';
+      setLoading(true);
+
+      fetch('/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: text })
+      })
+      .then(res => res.json())
+      .then(data => {
+        setLoading(false);
+        if (data.clarification) {
+          appendMessage('genie', `<em>${escapeHtml(data.clarification)}</em>`);
+        } else if (data.image_url) {
+          let html = "";
+          if (data.message) html += escapeHtml(data.message) + "<br>";
+          html += `<img src="${data.image_url}" alt="Plot" style="max-width:100%;border:1px solid #ccc;border-radius:4px;margin-top:8px;">`;
+          appendMessage('genie', html);
+        } else if (data.response) {
+          appendMessage('genie', escapeHtml(data.response).replace(/\n/g, '<br>'));
+        } else if (data.error) {
+          appendMessage('genie', `<span style="color:red;">Error: ${escapeHtml(data.error)}</span>`);
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+        appendMessage('genie', '<span style="color:red;">Network error. Please try again.</span>');
+      });
+    }
+
+    // Prevent XSS by escaping HTML
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text.replace(/[&<>"']/g, function(m) {
+        return ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        })[m];
+      });
+    }
+
+    sendBtn.onclick = sendMessage;
+    userInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // Optional: allow pressing up arrow to recall last user message
+    let lastUserMsg = '';
+    userInput.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowUp' && lastUserMsg) {
+        userInput.value = lastUserMsg;
+      }
+    });
+
+    // Save last user message for recall
+    userInput.addEventListener('input', function() {
+      lastUserMsg = userInput.value;
+    });
+  </script>
+</body>
+</html>

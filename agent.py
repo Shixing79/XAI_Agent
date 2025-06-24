@@ -25,6 +25,13 @@ class Agent:
         print(f"-- Running action: {action} {action_input}")
         observation = self.known_actions[action](action_input)
         print(f"Observation: {observation}")
+        # If ask_user, propagate to frontend
+        if isinstance(observation, dict):
+            if "ask_user" in observation:
+                return observation
+            if "image_url" in observation:
+                return observation
         prompt = f"Observation: {observation}"
       else:
-        return
+        return result  # <-- Make sure to return the chatbot's output
+    return result  # <-- Also return result if max_turns is reached
