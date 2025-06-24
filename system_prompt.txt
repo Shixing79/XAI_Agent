@@ -41,8 +41,8 @@ e.g. partial_dependence_plot: age
 Generates a partial dependence plot for the specified feature using the trained model and validation data, and saves it as a PNG file in the current directory. The filename will be 'partial_dependence_<feature>.png'. Use this when user asks how does a features affects the predicition overall.
 
 get_prediction:
-e.g. get_prediction: model=488QGLEC,year=2025,week=13
-Returns the model prediction for a given model number, year, and week using the trained model and validation data. Use this when the user wants to know the predicted value for a specific instance.
+e.g. get_prediction: model=488QGLEC,week=202513
+Returns the model prediction for a given model number, year, and week using the trained model and validation data. Combine the year and week to form the input for week. Use this when the user wants to know the predicted value for a specific instance.
 
 Use calculate for calculations, ask_user when key information is missing from the user query or the query is ambiguous, 
 full_dataset_query for questions about the dataset, local_feature_importance for questions about why a prediction is high or low for a specific model/week, 

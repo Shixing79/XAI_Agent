@@ -26,8 +26,12 @@ def ask():
                     "image_url": agent_response["image_url"],
                     "message": agent_response.get("message", "")
                 })
-        if isinstance(agent_response, str) and agent_response.strip().startswith("Answer:"):
-            agent_response = agent_response.strip()[len("Answer:"):].lstrip()
+            # New: Return thought, observation, response
+            return jsonify({
+                "thought": agent_response.get("thought", ""),
+                "observation": agent_response.get("observation", ""),
+                "response": agent_response.get("response", "")
+            })
         return jsonify({"response": agent_response})
     except Exception as e:
         return jsonify({"error": str(e)})

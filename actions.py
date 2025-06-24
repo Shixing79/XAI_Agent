@@ -11,8 +11,6 @@ from sklearn.inspection import partial_dependence
 from sklearn.inspection import PartialDependenceDisplay
 import json
 from pathlib import Path
-#import dice_ml
-#from dice_ml import Dice
 
 load_dotenv()
 
@@ -160,95 +158,6 @@ def get_prediction(query):
     except Exception as e:
         return f"Error in get_prediction: {e}"
 
-# def trend_of_uplifted_sell_out(query):
-
-#     try:
-#         df = pd.read_csv("full_dataset.csv")
-#         # Accept both "week" and "Numweek" in the query
-#         m = re.search(
-#             r'(year|week) on (year|week) trend.*model\s*([A-Za-z0-9]+).*(?:week|Numweek)\s*(\d+)(?:.*year\s*(\d+))?',
-#             query, re.IGNORECASE)
-#         if not m:
-#             return ("Please specify trend type, model, week, and optionally year. "
-#                     "E.g., 'year on year trend for model 488QGLEC week 13'")
-
-#         trend_type = m.group(1).lower()
-#         model = m.group(3)
-#         weeknum = int(m.group(4))
-#         year = int(m.group(5)) if m.group(5) else None
-
-#         if trend_type == "year":
-#             # Find all years for this model and weeknum
-#             rows = df[(df['model'] == model) & (df['WeekNum'] == weeknum)]
-#             if rows.shape[0] < 2:
-#                 return (f"Not enough data for year-on-year trend for model={model}, week={weeknum}")
-#             # Sort by year and take last two years
-#             rows = rows.sort_values("Year")
-#             last2 = rows.iloc[-2:]
-#             y1, y2 = last2['Year'].values
-#             v1, v2 = last2['uplifted_sell_out'].values
-#             if v1 == 0:
-#                 return ("Previous year's uplifted_sell_out is 0, cannot compute ratio.")
-#             ratio = v2 / v1
-#             return (f"Year-on-year trend for model={model}, week={weeknum}: "
-#                     f"{y1}={v1}, {y2}={v2}, ratio={ratio:.4f}")
-#         elif trend_type == "week":
-#             if not year:
-#                 return "Please specify the year for week-on-week trend."
-#             # Find this week and previous week
-#             row = df[(df['model'] == model) & (df['WeekNum'] == weeknum) & (df['Year'] == year)]
-#             prev_row = df[(df['model'] == model) & (df['WeekNum'] == weeknum-1) & (df['Year'] == year)]
-#             if row.empty or prev_row.empty:
-#                 return (f"Not enough data for week-on-week trend for model={model}, week={weeknum}, year={year}")
-#             v1 = prev_row.iloc[0]['uplifted_sell_out']
-#             v2 = row.iloc[0]['uplifted_sell_out']
-#             if v1 == 0:
-#                 return ("Previous week's uplifted_sell_out is 0, cannot compute ratio.")
-#             ratio = v2 / v1
-#             return (f"Week-on-week trend for model={model}, year={year}, "
-#                     f"week {weeknum-1}={v1}, week {weeknum}={v2}, ratio={ratio:.4f}")
-#         else:
-#             return "Unknown trend type. Use 'year on year' or 'week on week'."
-#     except Exception as e:
-#         return f"Error in trend_of_uplifted_sell_out: {e}"
-
-# def counterfactual_explanation(query):
-#     """
-#     Generates counterfactual explanations for a given instance using DiCE.
-#     Expects query in the form: "model=488QGLEC,week=202513,num_counterfactuals=3"
-#     """
-#     try:
-#         # Parse query
-#         m = re.search(r"model\s*=?\s*([A-Za-z0-9]+)[,\s]+week\s*=?\s*([0-9]+)(?:[,\s]+num_counterfactuals\s*=?\s*(\d+))?", query)
-#         if not m:
-#             return "Please specify model, week, and optionally num_counterfactuals, e.g., model=488QGLEC,week=202513,num_counterfactuals=3"
-#         model_name, week, num_cf = m.group(1), m.group(2), m.group(3)
-#         num_cf = int(num_cf) if num_cf else 3
-
-#         # Load data and model
-#         df = joblib.load("X_valid.joblib")
-#         model = joblib.load("lgbm_model.joblib")
-
-#         # Find the row
-#         row = df[(df['model'] == model_name) & (df['week'] == int(week))]
-#         if row.empty:
-#             return f"No data found for model={model_name}, week={week}"
-
-#         # Prepare DiCE data objects
-#         # Assume target column is 'uplifted_sell_out' (adjust if needed)
-#         d = dice_ml.Data(dataframe=df, continuous_features=[col for col in df.columns if df[col].dtype != 'object'], outcome_name='uplifted_sell_out')
-#         m = dice_ml.Model(model=model, backend="sklearn")
-#         exp = Dice(d, m, method="random")
-
-#         # Generate counterfactuals
-#         query_instance = row.iloc[0].to_dict()
-#         # For regression, DiCE expects a goal; here we add +10% to the prediction as an example
-#         y_pred = model.predict(row)[0]
-#         desired_range = [y_pred * 1.1, y_pred * 1.2]
-#         dice_exp = exp.generate_counterfactuals(query_instance, total_CFs=num_cf, desired_range=desired_range)
-#         return dice_exp.cf_examples_list[0].final_cfs_df.to_string(index=False)
-#     except Exception as e:
-#         return f"Error in counterfactual_explanation: {e}"
 
 known_actions = {
     "calculate": calculate,
@@ -259,6 +168,4 @@ known_actions = {
     "partial_dependence_plot": partial_dependence_plot,
     "feature_description": feature_description,
     "get_prediction": get_prediction,
-    # "trend_of_uplifted_sell_out": trend_of_uplifted_sell_out,
-    # "counterfactual_explanation": counterfactual_explanation,
 }

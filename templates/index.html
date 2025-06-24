@@ -34,6 +34,31 @@
       #chat-container { max-width: 98vw; padding: 8px; }
       #chat-box { height: 300px; padding: 8px; }
     }
+    .bubble-thought {
+      background: #fffde7;
+      border-left: 4px solid #ffd600;
+      color: #7c6f00;
+      font-size: 0.97em;
+      font-style: italic;
+      margin-bottom: 2px;
+    }
+    .bubble-observation {
+      background: #e3f2fd;
+      border-left: 4px solid #1976d2;
+      color: #0d47a1;
+      font-size: 0.97em;
+      font-style: italic;
+      margin-bottom: 2px;
+    }
+    .bubble-answer {
+      background: #e8f5e9;
+      border-left: 4px solid #43a047;
+      color: #1b5e20;
+      font-size: 1.05em;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+    .bubble img { max-width: 90%; }
   </style>
 </head>
 <body>
@@ -55,12 +80,16 @@
     // Focus input on load
     window.onload = () => userInput.focus();
 
-    function appendMessage(sender, text) {
+    function appendMessage(sender, text, type = "answer") {
       const msg = document.createElement('div');
       const senderClass = sender === 'user' ? 'user' : 'genie';
       const senderName = sender === 'user' ? 'You' : 'Genie';
+      let bubbleClass = "bubble";
+      if (type === "thought") bubbleClass += " bubble-thought";
+      else if (type === "observation") bubbleClass += " bubble-observation";
+      else bubbleClass += " bubble-answer";
       msg.className = 'msg ' + senderClass;
-      msg.innerHTML = `<span class="${senderClass}">${senderName}:</span><span class="bubble">${text}</span>`;
+      msg.innerHTML = `<span class="${senderClass}">${senderName}:</span><span class="${bubbleClass}">${text}</span>`;
       chatBox.appendChild(msg);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
@@ -87,21 +116,18 @@
       .then(data => {
         setLoading(false);
         if (data.clarification) {
-          appendMessage('genie', `<em>${escapeHtml(data.clarification)}</em>`);
+          appendMessage('genie', `<b>Clarification:</b> ${escapeHtml(data.clarification)}`);
         } else if (data.image_url) {
-          let html = "";
-          if (data.message) html += escapeHtml(data.message) + "<br>";
-          html += `<img src="${data.image_url}" alt="Plot" style="max-width:100%;border:1px solid #ccc;border-radius:4px;margin-top:8px;">`;
-          appendMessage('genie', html);
-        } else if (data.response) {
-          appendMessage('genie', escapeHtml(data.response).replace(/\n/g, '<br>'));
-        } else if (data.error) {
-          appendMessage('genie', `<span style="color:red;">Error: ${escapeHtml(data.error)}</span>`);
+          appendMessage('genie', `<img src="${data.image_url}" alt="Plot"><br>${escapeHtml(data.message || "")}`);
+        } else {
+          if (data.thought) appendMessage('genie', `Thought: ${escapeHtml(data.thought)}`, "thought");
+          if (data.observation) appendMessage('genie', `Observation: ${escapeHtml(data.observation)}`, "observation");
+          if (data.response) appendMessage('genie', `<strong>${escapeHtml(data.response).replace(/\n/g, '<br>')}</strong>`, "answer");
         }
       })
-      .catch(() => {
+      .catch(err => {
         setLoading(false);
-        appendMessage('genie', '<span style="color:red;">Network error. Please try again.</span>');
+        appendMessage('genie', "Sorry, there was an error.");
       });
     }
 
