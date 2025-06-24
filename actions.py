@@ -1,20 +1,20 @@
-import os 
-from dotenv import load_dotenv 
+import os
+from dotenv import load_dotenv
 import pandas as pd
 import shap
 import joblib
 import re
-#import matplotlib
-#matplotlib.use('Agg')  # Use a non-interactive backend suitable for scripts and servers
-#import matplotlib.pyplot as plt
-#from sklearn.inspection import partial_dependence
-#from sklearn.inspection import PartialDependenceDisplay
+import matplotlib
+matplotlib.use('Agg')  # Use a non-interactive backend suitable for scripts and servers
+import matplotlib.pyplot as plt
+from sklearn.inspection import partial_dependence
+from sklearn.inspection import PartialDependenceDisplay
 import json
 from pathlib import Path
 #import dice_ml
 #from dice_ml import Dice
 
-load_dotenv() 
+load_dotenv()
 
 def ask_user(question):
     # Instead of input(), return a special marker for the frontend
@@ -91,32 +91,32 @@ def global_feature_importance(_=None):
     except Exception as e:
         return f"Error in global_feature_importance: {e}"
 
-# def partial_dependence_plot(query):
-#     try:
-#         feature = query.strip()
-#         model = joblib.load("lgbm_model.joblib")
-#         df = joblib.load("X_valid.joblib")
-#         if feature not in df.columns:
-#             return f"Feature '{feature}' not found in dataset."
-#         # Convert integer columns to float for partial dependence
-#         if pd.api.types.is_integer_dtype(df[feature]):
-#             df[feature] = df[feature].astype(float)
-        
-#         plt.figure()
-#         display = PartialDependenceDisplay.from_estimator(model, df, [feature])
-#         # Save to static/plots/
-#         os.makedirs("static/plots", exist_ok=True)
-#         filename = f"partial_dependence_{feature}.png"
-#         filepath = os.path.join("static/plots", filename)
-#         plt.savefig(filepath)
-#         plt.close('all') 
-#         # Return a special marker for the frontend
-#         return {
-#             "image_url": f"/static/plots/{filename}",
-#             "message": f"Partial dependence plot for '{feature}':"
-#         }
-#     except Exception as e:
-#         return f"Error in partial_dependence_plot: {e}"
+def partial_dependence_plot(query):
+    try:
+        feature = query.strip()
+        model = joblib.load("lgbm_model.joblib")
+        df = joblib.load("X_valid.joblib")
+        if feature not in df.columns:
+            return f"Feature '{feature}' not found in dataset."
+        # Convert integer columns to float for partial dependence
+        if pd.api.types.is_integer_dtype(df[feature]):
+            df[feature] = df[feature].astype(float)
+
+        plt.figure()
+        display = PartialDependenceDisplay.from_estimator(model, df, [feature])
+        # Save to static/plots/
+        os.makedirs("static/plots", exist_ok=True)
+        filename = f"partial_dependence_{feature}.png"
+        filepath = os.path.join("static/plots", filename)
+        plt.savefig(filepath)
+        plt.close('all')
+        # Return a special marker for the frontend
+        return {
+            "image_url": f"/static/plots/{filename}",
+            "message": f"Partial dependence plot for '{feature}':"
+        }
+    except Exception as e:
+        return f"Error in partial_dependence_plot: {e}"
 
 def feature_description(feature_name, metadata_path="metadata.md"):
     """
@@ -140,7 +140,7 @@ def feature_description(feature_name, metadata_path="metadata.md"):
         return f"Error in feature_description: {e}"
 
 # def trend_of_uplifted_sell_out(query):
- 
+
 #     try:
 #         df = pd.read_csv("full_dataset.csv")
 #         # Accept both "week" and "Numweek" in the query
@@ -235,7 +235,7 @@ known_actions = {
     "full_dataset_query": full_dataset_query,
     "local_feature_importance": local_feature_importance,
     "global_feature_importance": global_feature_importance,
-    #"partial_dependence_plot": partial_dependence_plot,
+    "partial_dependence_plot": partial_dependence_plot,
     "feature_description": feature_description,
     #"trend_of_uplifted_sell_out": trend_of_uplifted_sell_out,
     #"counterfactual_explanation": counterfactual_explanation,
