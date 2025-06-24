@@ -139,6 +139,27 @@ def feature_description(feature_name, metadata_path="metadata.md"):
     except Exception as e:
         return f"Error in feature_description: {e}"
 
+def get_prediction(query):
+    try:
+        m = re.search(r"model\s*=?\s*([A-Za-z0-9]+)[,\s]+week\s*=?\s*([0-9]+)", query)
+        if not m:
+            return "Please specify model and week, e.g., model=488QGLEC,week=202513"
+        model_name, week = m.group(1), m.group(2)
+
+        # Load data and model
+        df = joblib.load("X_valid.joblib")
+        model = joblib.load("lgbm_model.joblib")
+
+        # Find the row
+        row = df[(df['model'] == model_name) & (df['week'] == int(week))]
+        if row.empty:
+            return f"No data found for model={model_name}, week={week}"
+
+        pred = model.predict(row)[0]
+        return f"Prediction for model={model_name}, week={week}: {pred:.4f}"
+    except Exception as e:
+        return f"Error in get_prediction: {e}"
+
 # def trend_of_uplifted_sell_out(query):
 
 #     try:
@@ -237,6 +258,7 @@ known_actions = {
     "global_feature_importance": global_feature_importance,
     "partial_dependence_plot": partial_dependence_plot,
     "feature_description": feature_description,
-    #"trend_of_uplifted_sell_out": trend_of_uplifted_sell_out,
-    #"counterfactual_explanation": counterfactual_explanation,
+    "get_prediction": get_prediction,
+    # "trend_of_uplifted_sell_out": trend_of_uplifted_sell_out,
+    # "counterfactual_explanation": counterfactual_explanation,
 }
