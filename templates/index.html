@@ -1,170 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Forecast Genie</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f7f7f7; margin: 0; }
-    #chat-container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 12px #bbb; padding: 24px; }
-    #chat-box { height: 400px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px; padding: 16px; background: #fafbfc; margin-bottom: 16px; }
-    .msg { margin: 12px 0; display: flex; align-items: flex-start; }
-    .user, .genie { font-weight: bold; margin-right: 8px; }
-    .user { color: #1976d2; }
-    .genie { color: #43a047; }
-    .bubble {
-      display: inline-block;
-      padding: 10px 16px;
-      border-radius: 16px;
-      max-width: 80%;
-      background: #e3f2fd;
-      margin-left: 4px;
-      word-break: break-word;
-    }
-    .msg.genie .bubble { background: #e8f5e9; }
-    .msg.user { flex-direction: row-reverse; }
-    .msg.user .bubble { background: #e3f2fd; }
-    .msg.user .user { margin-left: 8px; margin-right: 0; }
-    #input-row { display: flex; gap: 8px; }
-    #user-input { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; }
-    #send-btn { padding: 12px 22px; border: none; border-radius: 6px; background: #1976d2; color: #fff; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
-    #send-btn:disabled { background: #90caf9; cursor: not-allowed; }
-    #loading { display: none; margin-left: 10px; color: #888; font-style: italic; }
-    @media (max-width: 700px) {
-      #chat-container { max-width: 98vw; padding: 8px; }
-      #chat-box { height: 300px; padding: 8px; }
-    }
-    .bubble-thought {
-      background: #fffde7;
-      border-left: 4px solid #ffd600;
-      color: #7c6f00;
-      font-size: 0.97em;
-      font-style: italic;
-      margin-bottom: 2px;
-    }
-    .bubble-observation {
-      background: #e3f2fd;
-      border-left: 4px solid #1976d2;
-      color: #0d47a1;
-      font-size: 0.97em;
-      font-style: italic;
-      margin-bottom: 2px;
-    }
-    .bubble-answer {
-      background: #e8f5e9;
-      border-left: 4px solid #43a047;
-      color: #1b5e20;
-      font-size: 1.05em;
-      font-weight: 500;
-      margin-top: 4px;
-    }
-    .bubble img { max-width: 90%; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 </head>
 <body>
   <div id="chat-container">
-    <h2 style="text-align:center; margin-top:0;">Forecast Genie</h2>
-    <div id="chat-box" aria-live="polite" aria-label="Chat history"></div>
+    <header>
+      Forecast Genie
+      <button id="dark-toggle">🌙 Dark</button>
+    </header>
+    <div id="chat-area">
+      <div id="chat-box" aria-live="polite" aria-label="Chat history">
+        <!-- Chat messages go here -->
+      </div>
+    </div>
     <div id="input-row">
-      <input type="text" id="user-input" placeholder="Type your XAI question..." autocomplete="off" autofocus aria-label="Type your XAI question" />
-      <button id="send-btn" aria-label="Send message">Send</button>
-      <span id="loading">Thinking...</span>
+      <input type="text" id="user-input" placeholder="Type your XAI question..." autocomplete="off" />
+      <button id="send-btn">Send</button>
+      <span id="loading" class="dots">Thinking</span>
     </div>
   </div>
-  <script>
-    const chatBox = document.getElementById('chat-box');
-    const userInput = document.getElementById('user-input');
-    const sendBtn = document.getElementById('send-btn');
-    const loading = document.getElementById('loading');
-
-    // Focus input on load
-    window.onload = () => userInput.focus();
-
-    function appendMessage(sender, text, type = "answer") {
-      const msg = document.createElement('div');
-      const senderClass = sender === 'user' ? 'user' : 'genie';
-      const senderName = sender === 'user' ? 'You' : 'Genie';
-      let bubbleClass = "bubble";
-      if (type === "thought") bubbleClass += " bubble-thought";
-      else if (type === "observation") bubbleClass += " bubble-observation";
-      else bubbleClass += " bubble-answer";
-      msg.className = 'msg ' + senderClass;
-      msg.innerHTML = `<span class="${senderClass}">${senderName}:</span><span class="${bubbleClass}">${text}</span>`;
-      chatBox.appendChild(msg);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function setLoading(isLoading) {
-      loading.style.display = isLoading ? 'inline' : 'none';
-      sendBtn.disabled = isLoading;
-      userInput.disabled = isLoading;
-    }
-
-    function sendMessage() {
-      const text = userInput.value.trim();
-      if (!text) return;
-      appendMessage('user', escapeHtml(text));
-      userInput.value = '';
-      setLoading(true);
-
-      fetch('/ask', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: text })
-      })
-      .then(res => res.json())
-      .then(data => {
-        setLoading(false);
-        if (data.clarification) {
-          appendMessage('genie', `<b>Clarification:</b> ${escapeHtml(data.clarification)}`);
-        } else if (data.image_url) {
-          appendMessage('genie', `<img src="${data.image_url}" alt="Plot"><br>${escapeHtml(data.message || "")}`);
-        } else {
-          if (data.thought) appendMessage('genie', `Thought: ${escapeHtml(data.thought)}`, "thought");
-          if (data.observation) appendMessage('genie', `Observation: ${escapeHtml(data.observation)}`, "observation");
-          if (data.response) appendMessage('genie', `<strong>${escapeHtml(data.response).replace(/\n/g, '<br>')}</strong>`, "answer");
-        }
-      })
-      .catch(err => {
-        setLoading(false);
-        appendMessage('genie', "Sorry, there was an error.");
-      });
-    }
-
-    // Prevent XSS by escaping HTML
-    function escapeHtml(text) {
-      if (!text) return '';
-      return text.replace(/[&<>"']/g, function(m) {
-        return ({
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;'
-        })[m];
-      });
-    }
-
-    sendBtn.onclick = sendMessage;
-    userInput.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
-    });
-
-    // Optional: allow pressing up arrow to recall last user message
-    let lastUserMsg = '';
-    userInput.addEventListener('keydown', function(e) {
-      if (e.key === 'ArrowUp' && lastUserMsg) {
-        userInput.value = lastUserMsg;
-      }
-    });
-
-    // Save last user message for recall
-    userInput.addEventListener('input', function() {
-      lastUserMsg = userInput.value;
-    });
-  </script>
+  <script src="{{ url_for('static', filename='script.js') }}" defer></script>
 </body>
 </html>

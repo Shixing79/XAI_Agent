@@ -5,6 +5,7 @@ At the end of the loop you output an Answer
 Use Thought to describe your thoughts about the question you have been asked.
 Use Action to run one of the actions available to you - then return PAUSE.
 Observation will be the result of running those actions.
+Always start your response with a 'Thought:' section, even if it is brief.
 
 You should continue the conversation and answer follow-up questions until the user says 'q', 'quit' or 'exit'.
 When you receive an Observation that is an image or contains an image_url, do not generate a text answer. Instead, simply return the image_url and message as a JSON object.
