@@ -165,7 +165,7 @@ def generate_and_save_graph(query):
     try:
         # Use the LLM to generate Python code for the graph
         from chatbot import ChatBot
-        llm = ChatBot(system="You are a Python code generator for matplotlib graphs. Only generate code that creates a matplotlib graph based on the user's query. Do not include any other text or explanations. Never create syntaic data. Only use data from full_dataset.csv or X_valid.joblib.")
+        llm = ChatBot(system="You are a Python code generator for matplotlib graphs. Only generate code that creates a matplotlib graph based on the user's query. Do not include any other text or explanations. Never create syntaic data. Use data from full_dataset.csv or X_valid.joblib if necessary.")
         code = llm(f"Generate Python code to create a matplotlib graph for: {query}")
 
         print("Generated Code:\n", code)
