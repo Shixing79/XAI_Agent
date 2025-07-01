@@ -117,6 +117,11 @@ body.dark-mode #dark-toggle {
   background: #d2e7ff;
 }
 
+.msg.assistant .content {
+  background: #e0e0e0; /* darker gray for light mode */
+  color: #000;
+}
+
 body.dark-mode .msg.assistant .content {
   background: #2a2a2a;
   color: #fff;
