@@ -21,7 +21,7 @@ def ask():
         if isinstance(agent_response, dict):
             if "ask_user" in agent_response:
                 return jsonify({"clarification": agent_response["ask_user"]})
-            if "image_url" in agent_response:
+            if "image_url" in agent_response:  # Handle graph responses
                 return jsonify({
                     "image_url": agent_response["image_url"],
                     "message": agent_response.get("message", "")

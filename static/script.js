@@ -86,8 +86,11 @@ function sendMessage() {
       setLoading(false);
       if (data.clarification) {
         appendMessage('assistant', `<strong>Clarification:</strong> ${escapeHtml(data.clarification)}`);
-      } else if (data.image_url) {
-        appendMessage('assistant', `<img src="${data.image_url}" alt="Plot" style="max-width: 100%; border-radius: 8px;" /><br>${escapeHtml(data.message || "")}`);
+      } else if (data.image_url) {  // Handle graph responses
+        appendMessage('assistant', `
+          <img src="${data.image_url}" alt="Generated Graph" style="max-width: 100%; border-radius: 8px;" />
+          <br>${escapeHtml(data.message || "")}
+        `);
       } else {
         if (data.thought) appendMessage('assistant', `<em>Thought:</em> ${escapeHtml(data.thought)}`);
         if (data.observation) appendMessage('assistant', `<em>Observation:</em> ${escapeHtml(data.observation)}`);
