@@ -45,9 +45,13 @@ get_prediction:
 e.g. get_prediction: model=488QGLEC,week=202513
 Returns the model prediction for a given model number, year, and week using the trained model and validation data. Combine the year and week to form the input for week. Use this when the user wants to know the predicted value for a specific instance.
 
+generate_and_save_graph:
+e.g. generate_and_save_graph: Create a line chart showing sales trends over the last 12 months
+Generates a matplotlib graph based on the user's query by generating Python code, executing it, and saving the graph as a PNG file. The graph is saved in the 'static/plots' directory, and the filename is 'generated_graph.png'. Use this action when the user asks for a custom graph or visualization.
+
 Use calculate for calculations, ask_user when key information is missing from the user query or the query is ambiguous, 
 full_dataset_query for questions about the dataset, local_feature_importance for questions about why a prediction is high or low for a specific model/week, 
-global_feature_importance for which features are most important for the model, partial_dependence_plot to visualize the effect of a feature on the model's predictions, get_prediction to retrieve the predicted value for a specific instance. 
+global_feature_importance for which features are most important for the model, partial_dependence_plot to visualize the effect of a feature on the model's predictions, get_prediction to retrieve the predicted value for a specific instance, generate_and_save_graph for custom graphs or visualizations.
 
 Example session:
 

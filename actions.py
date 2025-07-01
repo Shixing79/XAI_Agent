@@ -158,6 +158,59 @@ def get_prediction(query):
     except Exception as e:
         return f"Error in get_prediction: {e}"
 
+def generate_and_save_graph(query):
+    """
+    Generates a matplotlib graph based on the query using LLM, executes the code, and saves the graph.
+    """
+    try:
+        # Use the LLM to generate Python code for the graph
+        from chatbot import ChatBot
+        llm = ChatBot(system="You are a Python code generator for matplotlib graphs. Only generate code that creates a matplotlib graph based on the user's query. Do not include any other text or explanations. Never create syntaic data. Only use data from full_dataset.csv or X_valid.joblib.")
+        code = llm(f"Generate Python code to create a matplotlib graph for: {query}")
+
+        print("Generated Code:\n", code)
+
+        # Extract the title from the code (fallback to a default title)
+        title_match = re.search(r"plt\.title\s*\(\s*[\"'](.+?)[\"']\s*\)", code)
+        title = title_match.group(1) if title_match else "graph"
+
+        # Sanitize the title to create a valid filename
+        sanitized_title = re.sub(r"[^\w\s-]", "", title).strip().replace(" ", "_")
+
+        # Define a safe execution environment
+        safe_globals = {
+            "__builtins__": {
+                "print": print,
+                "range": range,
+                "len": len,
+                "min": min,
+                "max": max,
+                "sum": sum,
+                "__import__": __import__,  # Allow dynamic imports
+            },
+            "plt": plt,
+            "pd": pd,
+            "os": os,
+        }
+        safe_locals = {}
+
+        # Execute the generated code
+        exec(code, safe_globals, safe_locals)
+
+        # Save the graph with a filename based on the title
+        os.makedirs("static/plots", exist_ok=True)
+        filename = f"{sanitized_title}.png"
+        filepath = os.path.join("static/plots", filename)
+        plt.savefig(filepath)
+        plt.close('all')
+
+        # Return the graph's URL
+        return {
+            "image_url": f"/static/plots/{filename}",
+            "message": f"Graph '{title}' generated and saved successfully."
+        }
+    except Exception as e:
+        return f"Error in generate_and_save_graph: {e}"
 
 known_actions = {
     "calculate": calculate,
@@ -168,4 +221,5 @@ known_actions = {
     "partial_dependence_plot": partial_dependence_plot,
     "feature_description": feature_description,
     "get_prediction": get_prediction,
+    "generate_and_save_graph": generate_and_save_graph,
 }
