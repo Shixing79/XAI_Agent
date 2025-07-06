@@ -3,6 +3,7 @@ const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 const loading = document.getElementById('loading');
 const darkToggle = document.getElementById('dark-toggle');
+const resetBtn = document.getElementById('reset-btn');
 
 window.onload = () => userInput.focus();
 
@@ -138,4 +139,9 @@ userInput.addEventListener('input', function () {
 darkToggle.onclick = () => {
   document.body.classList.toggle('dark-mode');
   darkToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️ Light' : '🌙 Dark';
+};
+
+resetBtn.onclick = () => {
+  fetch('/reset', { method: 'POST' })
+    .then(() => location.reload());
 };

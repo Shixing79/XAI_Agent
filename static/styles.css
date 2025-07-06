@@ -42,16 +42,27 @@ body.dark-mode header {
   color: #fff;
 }
 
-#dark-toggle {
+#dark-toggle,
+#reset-btn,
+.header-btn {
   font-size: 1rem;
   padding: 0.5rem 1rem;
   background: #eee;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  margin-right: 0.5rem;
+  transition: background 0.3s, color 0.3s;
 }
 
-body.dark-mode #dark-toggle {
+#dark-toggle:last-child,
+.header-btn:last-child {
+  margin-right: 0;
+}
+
+body.dark-mode #dark-toggle,
+body.dark-mode #reset-btn,
+body.dark-mode .header-btn {
   background: #444;
   color: #fff;
 }

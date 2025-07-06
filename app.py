@@ -5,11 +5,24 @@ from actions import known_actions
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
 # Initialize the agent
-agent = Agent(system_prompt=open("system_prompt.txt", "r").read(), max_turns=5, known_actions=known_actions)
+def create_agent():
+    return Agent(
+        system_prompt=open("system_prompt.txt", "r").read(),
+        max_turns=5,
+        known_actions=known_actions
+    )
+
+agent = create_agent()
 
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/reset", methods=["POST"])
+def reset():
+    global agent
+    agent = create_agent()
+    return jsonify({"status": "reset"})
 
 @app.route("/ask", methods=["POST"])
 def ask():
