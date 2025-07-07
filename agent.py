@@ -3,7 +3,7 @@ from chatbot import ChatBot
 from actions import known_actions
 
 class Agent:
-    def __init__(self, system_prompt="", max_turns=5, known_actions=None):
+    def __init__(self, system_prompt="", max_turns=10, known_actions=None):
         self.max_turns = max_turns
         self.bot = ChatBot(system_prompt)
         self.known_actions = known_actions

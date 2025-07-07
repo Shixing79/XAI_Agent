@@ -30,7 +30,7 @@ Allows you to run Python/pandas queries on the dataset loaded from full_dataset.
 When the user ask for Year/week on Year/week trend, calculate using n year/week divided by n-1 year/week. 
 
 local_feature_importance:
-e.g. local_feature_importance: model=488QGLEC,week=202513
+e.g. local_feature_importance: model=271CCVNB,week=202509
 Explains the model's prediction for a given model and week using SHAP, showing the top contributing features and their impact. This is only suitable for predicitions in 2025.
 
 global_feature_importance:
@@ -42,7 +42,7 @@ e.g. partial_dependence_plot: age
 Generates a partial dependence plot for the specified feature using the trained model and validation data, and saves it as a PNG file in the current directory. The filename will be 'partial_dependence_<feature>.png'. Use this when user asks how does a features affects the predicition overall.
 
 get_prediction:
-e.g. get_prediction: model=488QGLEC,week=202513
+e.g. get_prediction: model=271CCVNB,week=202509
 Returns the model prediction for a given model number, year, and week using the trained model and validation data. Combine the year and week to form the input for week. Use this when the user wants to know the predicted value for a specific instance.
 
 generate_and_save_graph:

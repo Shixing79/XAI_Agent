@@ -2,7 +2,7 @@ from agent import Agent
 from actions import known_actions
 
 if __name__ == "__main__":
-    agent = Agent(system_prompt=open("system_prompt.txt", "r").read(), max_turns=5, known_actions=known_actions)
+    agent = Agent(system_prompt=open("system_prompt.txt", "r").read(), max_turns=10, known_actions=known_actions)
     print("What is your question for the Agent?\nType 'q', 'quit' or 'exit' to end the conversation.")    
     while True:
         user_question = input("You: ")
