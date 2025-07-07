@@ -27,8 +27,9 @@ def calculate(what):
 def full_dataset_query(query):
     try:
         df = pd.read_csv("full_dataset.csv")
-        # Only allow attribute access and simple expressions for safety
         result = eval(query, {"df": df, "pd": pd})
+        if isinstance(result, pd.DataFrame):
+            return result.to_string(max_rows=100, max_cols=100)
         return str(result)
     except Exception as e:
         return f"Error in full_dataset_query: {e}"
@@ -165,7 +166,7 @@ def generate_and_save_graph(query):
     try:
         # Use the LLM to generate Python code for the graph
         from chatbot import ChatBot
-        llm = ChatBot(system="You are a Python code generator for matplotlib graphs. Only generate code that creates a matplotlib graph based on the user's query. Do not include any other text or explanations. Never create syntaic data. Use data from full_dataset.csv or X_valid.joblib if necessary. Model ID is stored in column 'model', Year is stored in 'Year', week is stored as 'WeekNum'. The forecast/target variable is 'uplifted_sell_out'.")
+        llm = ChatBot(system="You are a Python code generator for matplotlib graphs. Only generate code that creates a matplotlib graph based on the user's query. Do not include any other text or explanations. Never create syntaic data. You may only use the following built-ins and modules. Built-ins: print, range, len, min, max, sum, str, __import__. Modules: matplotlib.pyplot as plt, pandas as pd, os. Use data from full_dataset.csv or X_valid.joblib if necessary. Model ID is stored in column 'model', Year is stored in 'Year', week is stored as 'WeekNum'. The forecast/target variable is 'uplifted_sell_out'.")
         code = llm(f"Generate Python code to create a matplotlib graph for: {query}")
 
         print("Generated Code:\n", code)
@@ -186,6 +187,7 @@ def generate_and_save_graph(query):
                 "min": min,
                 "max": max,
                 "sum": sum,
+                "str": str,
                 "__import__": __import__,  # Allow dynamic imports
             },
             "plt": plt,
