@@ -31,6 +31,56 @@ function appendMessage(sender, text) {
   chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
 }
 
+function appendAssistantMessage({thought, observation, response}) {
+  // Create the message container
+  let msgElem = document.createElement('div');
+  msgElem.className = "msg assistant";
+
+  let avatar = document.createElement('div');
+  avatar.className = "avatar";
+  avatar.textContent = '🤖';
+
+  let content = document.createElement('div');
+  content.className = "content";
+
+  // Main answer
+  let answerElem = document.createElement('div');
+  answerElem.innerHTML = escapeHtml(response).replace(/\n/g, '<br>');
+
+  // Process (thought + observation), hidden by default
+  let processElem = document.createElement('div');
+  processElem.style.display = 'none';
+  processElem.innerHTML = `
+    <em>Thought:</em> ${escapeHtml(thought)}<br>
+    <em>Observation:</em> ${escapeHtml(observation)}
+  `;
+
+  // Show process button
+  let btn = document.createElement('button');
+  btn.textContent = "Show process";
+  btn.className = "header-btn";
+  btn.style.marginTop = "0.75em";
+  btn.onclick = function() {
+    if (processElem.style.display === 'none') {
+      processElem.style.display = '';
+      btn.textContent = "Hide process";
+    } else {
+      processElem.style.display = 'none';
+      btn.textContent = "Show process";
+    }
+  };
+
+  content.appendChild(answerElem);
+  content.appendChild(btn);
+  content.appendChild(processElem);
+
+  msgElem.appendChild(avatar);
+  msgElem.appendChild(content);
+
+  chatBox.appendChild(msgElem);
+  chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
+}
+
 let thinkingElem = null;
 
 function showThinkingBubble() {
@@ -92,10 +142,14 @@ function sendMessage() {
           <img src="${data.image_url}" alt="Generated Graph" style="max-width: 100%; border-radius: 8px;" />
           <br>${escapeHtml(data.message || "")}
         `);
+      } else if (data.thought || data.observation || data.response) {
+        appendAssistantMessage({
+          thought: data.thought || "",
+          observation: data.observation || "",
+          response: data.response || ""
+        });
       } else {
-        if (data.thought) appendMessage('assistant', `<em>Thought:</em> ${escapeHtml(data.thought)}`);
-        if (data.observation) appendMessage('assistant', `<em>Observation:</em> ${escapeHtml(data.observation)}`);
-        if (data.response) appendMessage('assistant', escapeHtml(data.response).replace(/\n/g, '<br>'));
+        appendMessage('assistant', escapeHtml(data.response || "Sorry, there was an error.").replace(/\n/g, '<br>'));
       }
     })
     .catch(err => {
