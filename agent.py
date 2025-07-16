@@ -36,7 +36,7 @@ class Agent:
                 print(f"-- Running action: {action} {action_input}")
                 observation = self.known_actions[action](action_input)
                 print(f"Observation: {observation}")
-                last_observation = observation if isinstance(observation, str) else ""
+                last_observation = observation
                 # If ask_user, propagate to frontend
                 if isinstance(observation, dict):
                     if "ask_user" in observation:

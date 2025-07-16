@@ -27,6 +27,11 @@ def calculate(what):
 def full_dataset_query(query):
     try:
         df = pd.read_csv("full_dataset.csv")
+        pd.set_option('display.max_rows', None)  # Show all rows
+        pd.set_option('display.max_columns', None)  # Show all columns
+        pd.set_option('display.width', None)  # No line wrapping
+        pd.set_option('display.max_colwidth', None)  # Show full column content
+
         result = eval(query, {"df": df, "pd": pd})
         if isinstance(result, pd.DataFrame):
             return result.to_string(max_rows=100, max_cols=100)
