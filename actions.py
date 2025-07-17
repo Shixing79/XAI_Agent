@@ -20,7 +20,8 @@ def ask_user(question):
 
 def calculate(what):
     try:
-        return eval(what)
+        result = eval(what)
+        return str(result)  # Always return as string
     except Exception as e:
         return f"Error in calculate: {e}"
 
