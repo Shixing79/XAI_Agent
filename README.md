@@ -1,14 +1,16 @@
-# XAI_Agent
+# Forecast Genie (XAI_Agent)
 
-**XAI_Agent** is an interactive, explainable AI agent designed for demand forecasting, inventory management, and sales analysis. It enables users to query a machine learning model and its dataset using natural language, and provides transparent explanations for predictions using SHAP values and other interpretability tools.
+**Forecast Genie** is an interactive, explainable AI agent for demand forecasting, inventory management, and sales analysis. Users can query a machine learning model and its dataset using natural language, receiving clear, business-focused explanations for predictions and data insights.
 
 ## Features
 
-- **Conversational Interface:** Ask questions about sales, inventory, model predictions, and more.
-- **Explainable AI:** Get local and global feature importance using SHAP.
-- **Data Exploration:** Query the underlying dataset with Python/pandas expressions.
-- **Visualization:** Generate partial dependence plots for model features.
-- **Clarification:** The agent can ask follow-up questions for ambiguous queries.
+- **Conversational Interface:** Chat with the agent about sales, inventory, forecasts, and model results via terminal or web.
+- **Explainable AI:** View local and global feature importance, grouped into business categories, with plain-language impact explanations.
+- **Data Exploration:** Run Python/pandas queries on the underlying dataset.
+- **Visualization:** Generate and view partial dependence plots for model features.
+- **Clarification:** The agent asks follow-up questions for ambiguous queries.
+- **Image Responses:** When a response includes a plot or image, it is displayed directly in the chat (web version).
+- **Business Context:** All answers are tailored for business stakeholders, avoiding technical jargon.
 
 ## Usage
 
@@ -17,14 +19,18 @@
    pip install -r requirements.txt
    ```
 
-2. **Run the agent:**
-   ```bash
-   python main.py
-   ```
+2. **Set up your OpenAI API key:**
+   - Create a `.env` file and add your API key as `OPENAI_API_KEY=...`
 
-3. **Interact:**
-   - Type your question at the prompt.
-   - Type `q`, `quit`, or `exit` to end the conversation.
+
+3. **Run the web app:**
+   ```bash
+   python app.py
+   ```
+   - The app will start a local web server. Open your browser to `http://localhost:5001`.
+
+5. **Interact:**
+   - Type your question in the chat box.
 
 ## Example Questions
 
@@ -33,16 +39,22 @@
 - "Show me the average raw stock on hand."
 - "What does the feature `13w_sellout` mean?"
 - "Plot the partial dependence of `rawsoh`."
+- "How did sales change from last year to this year for model 271CCVNB?"
 
 ## Project Structure
 
-- `main.py` — Entry point for the agent.
+- `main.py` — Entry point for the terminal agent.
+- `app.py` — Web app entry point.
 - `agent.py` — Core agent logic.
 - `actions.py` — Implements available actions (feature importance, plotting, etc.).
+- `chatbot.py` — Chat interface logic.
 - `system_prompt.txt` — System prompt and action definitions.
-- `full_dataset.csv` — Main dataset (not included in repo).
+- `full_dataset.csv` — Main dataset (**not included for confidentiality reasons**).
+- `X_valid.joblib` — Validation set for the model (**not included for confidentiality reasons**).
 - `metadata.md` — Dataset and feature descriptions.
 - `requirements.txt` — Python dependencies.
+- `static/` — Frontend assets (JS, CSS, plots).
+- `templates/` — HTML templates.
 
 ## Requirements
 
@@ -51,5 +63,6 @@
 
 ## Notes
 
-- The agent uses OpenAI API; set up your API keys as needed.
-- The dataset file (`full_dataset.csv`) is required for data queries and is not included in this repository.
+- The agent uses OpenAI API; set up your API keys as described above.
+- The dataset file (`full_dataset.csv`) and validation set (`X_valid.joblib`) are required for data queries and model predictions, but are **not included in this repository for confidentiality reasons**.
+- Generated plots are saved in `static/plots/` and displayed in the chat when relevant.
