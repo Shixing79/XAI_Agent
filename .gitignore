@@ -1,4 +1,6 @@
 .env
 __pycache__/
 *.pyc
-.vercel
+full_dataset.csv
+lgbm_model.joblib
+X_valid.jonlib
