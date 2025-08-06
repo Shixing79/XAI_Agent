@@ -2,5 +2,4 @@
 __pycache__/
 *.pyc
 full_dataset.csv
-lgbm_model.joblib
-X_valid.jonlib
+X_valid.joblib
