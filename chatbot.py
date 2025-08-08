@@ -21,7 +21,7 @@ class ChatBot:
 
     def runllm(self):
         chat_completion = client.chat.completions.create(
-            model="o3-mini-2025-01-31",
+            model="gpt-4.1-2025-04-14",
             messages=self.messages
         )
         return chat_completion.choices[0].message.content
